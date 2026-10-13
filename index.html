@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMDALI SHOP — Exclusive Boss Clothing</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Montserrat & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                        },
+                        dark: {
+                            950: '#050507',
+                            900: '#0a0a0f',
+                            800: '#12121c',
+                            700: '#1a1a28',
+                            600: '#252538'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050507;
+            color: #f3f4f6;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050507;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a1a28;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #eab308;
+        }
+        .glass {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.12);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #facc15 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border-glow:focus {
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.35);
+        }
+        .gold-card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gold-card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px -10px rgba(234, 179, 8, 0.25);
+            border-color: rgba(234, 179, 8, 0.5);
+        }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-dark-950 text-gray-200 antialiased min-h-screen flex flex-col justify-between selection:bg-yellow-500 selection:text-black">
+
+    <!-- LOGIN MODAL SCREEN (OVERLAY) -->
+    <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg transition-opacity duration-300">
+        <div class="relative w-full max-w-md p-8 sm:p-10 rounded-3xl glass shadow-2xl border border-yellow-500/20 animate-fade-in">
+            <!-- Logo Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-2xl bg-gradient-to-tr from-amber-600 via-yellow-500 to-amber-300 text-black font-black text-3xl shadow-xl shadow-yellow-500/20 border border-yellow-300/40">
+                    A
+                </div>
+                <h2 class="text-3xl font-black tracking-widest font-heading gold-gradient-text uppercase">AMDALI SHOP</h2>
+                <p class="text-xs text-yellow-500/80 font-semibold tracking-[0.25em] uppercase mt-2">Private VIP Club & Luxury Apparel</p>
+            </div>
+
+            <!-- Error Alert -->
+            <div id="loginError" class="hidden mb-6 p-4 rounded-2xl bg-red-950/80 border border-red-500/60 text-red-300 text-sm flex items-center gap-3 animate-fade-in">
+                <i class="fa-solid fa-shield-halved text-red-400 text-xl"></i>
+                <span id="loginErrorText">Доступ запрещен! Доступ только для боссов.</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Ваше Имя / Статус</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-yellow-500/60">
+                            <i class="fa-solid fa-crown"></i>
+                        </span>
+                        <input type="text" id="usernameInput" required placeholder="Введите имя..." 
+                            class="w-full py-4 pl-12 pr-4 bg-dark-900 border border-white/10 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500 gold-border-glow transition-all font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Секретный Код Доступа</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-yellow-500/60">
+                            <i class="fa-solid fa-key"></i>
+                        </span>
+                        <input type="password" id="passwordInput" required placeholder="••••••••" 
+                            class="w-full py-4 pl-12 pr-4 bg-dark-900 border border-white/10 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500 gold-border-glow transition-all font-medium">
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-black font-extrabold uppercase tracking-widest rounded-2xl shadow-xl shadow-yellow-500/25 transition-all duration-300 transform active:scale-95">
+                    Получить доступ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTENT -->
+    <div id="appContent" class="hidden flex-col min-h-screen">
+
+        <!-- HEADER / NAVIGATION -->
+        <header class="sticky top-0 z-40 glass border-b border-yellow-500/15 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-24">
+                    <!-- Logo -->
+                    <a href="#" class="flex items-center gap-3.5 group">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black font-black text-2xl flex items-center justify-center shadow-lg shadow-yellow-500/20 group-hover:scale-105 transition-transform border border-yellow-300/30">
+                            A
+                        </div>
+                        <div>
+                            <span class="text-2xl font-black font-heading tracking-widest gold-gradient-text block leading-none">AMDALI</span>
+                            <span class="text-[10px] text-gray-400 tracking-[0.3em] font-bold uppercase">Luxury House</span>
+                        </div>
+                    </a>
+
+                    <!-- Navigation Links -->
+                    <nav class="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wider uppercase">
+                        <a href="#catalog" class="text-gray-300 hover:text-yellow-400 transition-colors">Каталог</a>
+                        <a href="#founder" class="text-gray-300 hover:text-yellow-400 transition-colors">Основатель</a>
+                        <a href="#advantages" class="text-gray-300 hover:text-yellow-400 transition-colors">Преимущества</a>
+                        <a href="#contacts" class="text-gray-300 hover:text-yellow-400 transition-colors">Контакты</a>
+                    </nav>
+
+                    <!-- Controls -->
+                    <div class="flex items-center space-x-4 sm:space-x-6">
+                        <!-- User Greeting -->
+                        <div class="hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-full bg-dark-800 border border-yellow-500/20 text-xs font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
+                            <span class="text-gray-400">Boss:</span>
+                            <span id="userGreeting" class="gold-gradient-text font-bold">Гость</span>
+                        </div>
+
+                        <!-- Cart Button -->
+                        <button onclick="toggleCart(true)" class="relative p-3 text-yellow-400 bg-dark-800 hover:bg-dark-700 border border-yellow-500/20 rounded-2xl transition-all shadow-md">
+                            <i class="fa-solid fa-crown text-lg"></i>
+                            <span id="cartBadge" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-black rounded-full h-5 w-5 flex items-center justify-center opacity-0 transition-all scale-90 border border-black">0</span>
+                        </button>
+
+                        <!-- Logout Button -->
+                        <button onclick="logout()" title="Выйти" class="p-3 text-gray-400 hover:text-red-400 bg-dark-800 hover:bg-dark-700 border border-white/10 rounded-2xl transition-colors">
+                            <i class="fa-solid fa-power-off text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <!-- HERO SECTION -->
+            <section class="relative overflow-hidden py-24 lg:py-32 bg-gradient-to-b from-dark-900 via-dark-950 to-dark-950 border-b border-white/5">
+                <div class="absolute inset-0 opacity-20 pointer-events-none">
+                    <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-yellow-500 rounded-full filter blur-[150px]"></div>
+                    <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-amber-700 rounded-full filter blur-[150px]"></div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid lg:grid-cols-2 gap-16 items-center">
+                        <div class="space-y-8 text-center lg:text-left">
+                            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-bold tracking-widest uppercase">
+                                <i class="fa-solid fa-gem"></i> Эксклюзивная Коллекция 2026
+                            </div>
+                            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black font-heading leading-tight tracking-tight text-white">
+                                Одежда для тех, кто <span class="gold-gradient-text">управляет</span> миром
+                            </h1>
+                            <p class="text-gray-400 text-base sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+                                Бескомпромиссный люкс, высшее качество материалов и боссский стиль. Доступно только по секретному коду.
+                            </p>
+                            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 pt-4">
+                                <a href="#catalog" class="w-full sm:w-auto px-9 py-5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-black font-extrabold rounded-2xl transition-all shadow-xl shadow-yellow-500/20 text-center uppercase tracking-widest text-sm">
+                                    Смотреть каталог <i class="fa-solid fa-arrow-right ml-2"></i>
+                                </a>
+                                <a href="#founder" class="w-full sm:w-auto px-9 py-5 bg-dark-800 hover:bg-dark-700 border border-yellow-500/20 text-yellow-400 font-bold rounded-2xl transition-all text-center uppercase tracking-widest text-sm">
+                                    Обо мне / Магомедали
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Hero Luxury Visual -->
+                        <div class="relative grid grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800" alt="Костюм Boss" class="w-full h-72 sm:h-96 object-cover rounded-3xl shadow-2xl border border-yellow-500/20">
+                                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800" alt="Кожаная куртка" class="w-full h-44 sm:h-52 object-cover rounded-3xl shadow-2xl border border-yellow-500/20">
+                            </div>
+                            <div class="space-y-4 pt-10">
+                                <img src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&q=80&w=800" alt="Пальто" class="w-full h-44 sm:h-52 object-cover rounded-3xl shadow-2xl border border-yellow-500/20">
+                                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&q=80&w=800" alt="Худи Премиум" class="w-full h-72 sm:h-96 object-cover rounded-3xl shadow-2xl border border-yellow-500/20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOUNDER SECTION (БЛОК МАГОМЕДАЛИ C ФОТО И ИНФОЙ) -->
+            <section id="founder" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="glass p-8 sm:p-14 rounded-3xl border border-yellow-500/30 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+                        
+                        <!-- PHOTO PLACEHOLDER FOR USER PHOTO -->
+                        <div class="lg:col-span-5 flex justify-center">
+                            <div class="relative group w-full max-w-sm">
+                                <div class="absolute -inset-1 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 rounded-3xl blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                                
+                                <div class="relative aspect-[3/4] rounded-3xl bg-dark-900 border-2 border-yellow-500/40 overflow-hidden flex flex-col items-center justify-center p-6 text-center">
+                                    
+                                    <!-- ================================================================= -->
+                                    <!-- ИНСТРУКЦИЯ ДЛЯ ВСТАВКИ ФОТО: -->
+                                    <!-- Замените параметр src ниже на ссылку на вашу фотографию! -->
+                                    <!-- Например: src="https://my-photo-domain.com/photo.jpg" -->
+                                    <!-- ================================================================= -->
+                                    <img 
+                                        id="founderPhoto"
+                                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800" 
+                                        alt="Магомедали - Основатель AMDALI SHOP" 
+                                        class="absolute inset-0 w-full h-full object-cover"
+                                        onerror="this.style.display='none'; document.getElementById('photoFallback').classList.remove('hidden');"
+                                    >
+
+                                    <!-- Заглушка если нет фото или ошибка загрузки -->
+                                    <div id="photoFallback" class="hidden flex flex-col items-center justify-center space-y-4 text-yellow-400">
+                                        <div class="w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-3xl">
+                                            <i class="fa-solid fa-user-tie"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold font-heading text-lg text-white">Вставьте ваше фото</p>
+                                            <p class="text-xs text-gray-400 mt-1">В коде файла отредактируйте тег &lt;img id="founderPhoto"&gt;</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Наложение статуса -->
+                                    <div class="absolute bottom-4 left-4 right-4 p-3 bg-black/80 backdrop-blur-md border border-yellow-500/30 rounded-2xl text-center">
+                                        <span class="text-xs font-black tracking-widest gold-gradient-text uppercase block">Основатель & Владелец</span>
+                                        <span class="text-[11px] text-gray-300 font-semibold">Магомедали</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEXT & BIO -->
+                        <div class="lg:col-span-7 space-y-6 text-left">
+                            <div class="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-extrabold uppercase tracking-widest">
+                                Boss & Founder
+                            </div>
+                            <h2 class="text-3xl sm:text-5xl font-black font-heading text-white">
+                                Создано <span class="gold-gradient-text">Магомедали</span> для настоящих лидеров
+                            </h2>
+                            <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-light">
+                                «AMDALI SHOP — это не просто магазин одежды. Это философия мужской уверенности, где каждый элемент создается из премиальных итальянских и французских тканей. Мы не делаем массовые вещи — мы создаем боссский стиль для избранных».
+                            </p>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10">
+                                <div class="p-4 bg-dark-900/60 rounded-2xl border border-white/5">
+                                    <p class="text-2xl font-black gold-gradient-text font-heading">100%</p>
+                                    <p class="text-xs text-gray-400 mt-1">Оригинал & Люкс</p>
+                                </div>
+                                <div class="p-4 bg-dark-900/60 rounded-2xl border border-white/5">
+                                    <p class="text-2xl font-black gold-gradient-text font-heading">VIP</p>
+                                    <p class="text-xs text-gray-400 mt-1">Закрытый клуб</p>
+                                </div>
+                                <div class="p-4 bg-dark-900/60 rounded-2xl border border-white/5 col-span-2 sm:col-span-1">
+                                    <p class="text-2xl font-black gold-gradient-text font-heading">#1</p>
+                                    <p class="text-xs text-gray-400 mt-1">Боссский стиль</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- CATALOG SECTION -->
+            <section id="catalog" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Title -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase tracking-widest mb-2">
+                            <i class="fa-solid fa-crown"></i> Exclusive Collection
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-black font-heading text-white">Боссский Каталог</h2>
+                        <p class="text-gray-400 text-sm mt-2">Премиальные вещи высокой стоимости для тех, кто знает себе цену</p>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div id="categoryFilters" class="flex flex-wrap gap-2">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+
+            <!-- ADVANTAGES SECTION -->
+            <section id="advantages" class="py-24 bg-dark-900 border-t border-b border-yellow-500/10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-2xl mx-auto mb-16">
+                        <h2 class="text-3xl font-black font-heading text-white">Привилегии AMDALI CLUB</h2>
+                        <p class="text-gray-400 mt-3">Высочайший сервис и гарантированный эксклюзив для каждого клиента</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="p-8 rounded-3xl glass gold-card-hover border border-white/5">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black flex items-center justify-center text-2xl mb-6 shadow-lg shadow-yellow-500/20 font-bold">
+                                <i class="fa-solid fa-plane"></i>
+                            </div>
+                            <h3 class="text-xl font-bold font-heading text-white mb-3">VIP Доставка по миру</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Персональная курьерская доставка в любую точку мира с возможностью выездной примерки.
+                            </p>
+                        </div>
+
+                        <div class="p-8 rounded-3xl glass gold-card-hover border border-white/5">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black flex items-center justify-center text-2xl mb-6 shadow-lg shadow-yellow-500/20 font-bold">
+                                <i class="fa-solid fa-user-ninja"></i>
+                            </div>
+                            <h3 class="text-xl font-bold font-heading text-white mb-3">Индивидуальный пошив</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Подгонка по фигуре лучших мастеров ателье AMDALI для идеальной посадки каждого костюма.
+                            </p>
+                        </div>
+
+                        <div class="p-8 rounded-3xl glass gold-card-hover border border-white/5">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black flex items-center justify-center text-2xl mb-6 shadow-lg shadow-yellow-500/20 font-bold">
+                                <i class="fa-solid fa-certificate"></i>
+                            </div>
+                            <h3 class="text-xl font-bold font-heading text-white mb-3">Сертификат Authenticity</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Каждая вещь поставляется с персональным золотым сертификатом подлинности и качества.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="contacts" class="bg-dark-950 border-t border-yellow-500/10 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                    <div class="space-y-4 md:col-span-1">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black font-black text-xl flex items-center justify-center">A</div>
+                            <span class="text-xl font-black font-heading gold-gradient-text tracking-widest">AMDALI</span>
+                        </div>
+                        <p class="text-xs text-gray-400 leading-relaxed">Эксклюзивные коллекции одежды для мужчин с боссским статусом.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-4">Навигация</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-medium">
+                            <li><a href="#catalog" class="hover:text-yellow-400 transition-colors">Каталог одежды</a></li>
+                            <li><a href="#founder" class="hover:text-yellow-400 transition-colors">О Магомедали</a></li>
+                            <li><a href="#advantages" class="hover:text-yellow-400 transition-colors">VIP Сервис</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-4">VIP Контакты</h4>
+                        <ul class="space-y-2.5 text-xs text-gray-400 font-medium">
+                            <li><i class="fa-solid fa-phone text-yellow-500 mr-2"></i> +1 (800) AMDALI-BOSS</li>
+                            <li><i class="fa-solid fa-envelope text-yellow-500 mr-2"></i> vip@amdalishop.com</li>
+                            <li><i class="fa-solid fa-location-dot text-yellow-500 mr-2"></i> Beverly Hills / Dubai / Moscow</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-4">Присоединяйтесь</h4>
+                        <div class="flex space-x-3 text-lg">
+                            <a href="#" class="w-10 h-10 rounded-xl bg-dark-800 border border-yellow-500/20 flex items-center justify-center text-yellow-400 hover:bg-yellow-500 hover:text-black transition-all"><i class="fa-brands fa-telegram"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-xl bg-dark-800 border border-yellow-500/20 flex items-center justify-center text-yellow-400 hover:bg-yellow-500 hover:text-black transition-all"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-xl bg-dark-800 border border-yellow-500/20 flex items-center justify-center text-yellow-400 hover:bg-yellow-500 hover:text-black transition-all"><i class="fa-brands fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-white/5 text-center text-xs text-gray-500 font-medium">
+                    &copy; 2026 AMDALI SHOP by Magamadali. All Rights Reserved. Luxury Men's Wear.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- CART DRAWER / SIDEBAR -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleCart(false)"></div>
+
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-dark-900 border-l border-yellow-500/20 z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between shadow-2xl">
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-crown text-yellow-400 text-xl"></i>
+                <h3 class="text-xl font-bold font-heading text-white">Корзина Boss</h3>
+            </div>
+            <button onclick="toggleCart(false)" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItemsContainer" class="p-6 flex-grow overflow-y-auto space-y-4 divide-y divide-white/5">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="p-6 border-t border-white/10 bg-dark-950 space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm uppercase tracking-wider font-semibold">Итого USD:</span>
+                <span id="cartTotalSum" class="text-3xl font-black font-heading gold-gradient-text">$0</span>
+            </div>
+            <button id="checkoutBtn" onclick="checkout()" disabled
+                class="w-full py-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 disabled:from-gray-800 disabled:to-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed hover:brightness-110 text-black font-black uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-yellow-500/20">
+                Заказать доставку
+            </button>
+        </div>
+    </div>
+
+    <!-- SUCCESS ORDER MODAL -->
+    <div id="orderSuccessModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div class="w-full max-w-md p-8 rounded-3xl glass border border-yellow-500/40 text-center animate-fade-in space-y-5">
+            <div class="w-20 h-20 bg-yellow-500/10 text-yellow-400 rounded-2xl flex items-center justify-center mx-auto text-4xl border border-yellow-500/30">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white font-heading gold-gradient-text">Заказ принят, Boss!</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+                Спасибо за покупку, <span id="orderCustomerName" class="text-yellow-400 font-bold"></span>! Ваш личный VIP-ассистент от Магомедали уже подготавливает закрытую доставку.
+            </p>
+            <button onclick="closeOrderModal()" class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">
+                Отлично
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STATE ---
+        const SECRET_PASSWORD = "magamadali";
+        let currentUser = localStorage.getItem("amdali_user") || null;
+        let selectedCategory = "Все";
+        let cart = [];
+
+        // LUXURY EXPENSIVE PRODUCTS DATABASE ($ USD)
+        const products = [
+            {
+                id: 1,
+                title: "Кожаная куртка 'Boss Godfather' Crocodile Leather",
+                category: "Куртки",
+                price: 4500,
+                image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 2,
+                title: "Кашемировое пальто AMDALI Royal Cashmere",
+                category: "Куртки",
+                price: 3200,
+                image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 3,
+                title: "Шелковое худи 'Gold Monogram' Black Velvet",
+                category: "Худи и Свитшоты",
+                price: 1250,
+                image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 4,
+                title: "Двубортный костюм Slim Fit 'Dubai Billionaire'",
+                category: "Костюмы",
+                price: 3800,
+                image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 5,
+                title: "Футболка из египетского хлопка 'Gold Seal'",
+                category: "Футболки",
+                price: 850,
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 6,
+                title: "Дизайнерские брюки 'Imperial Wool'",
+                category: "Брюки",
+                price: 1450,
+                image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 7,
+                title: "Кожаные ботинки Челси 'Python Limited'",
+                category: "Обувь",
+                price: 2600,
+                image: "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+                id: 8,
+                title: "Кроссовки 'Gold Emblem Panther' Luxury Sneakers",
+                category: "Обувь",
+                price: 1950,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800"
+            }
+        ];
+
+        const categories = ["Все", "Куртки", "Костюмы", "Худи и Свитшоты", "Футболки", "Брюки", "Обувь"];
+
+        // INITIALIZATION ON LOAD
+        window.onload = function() {
+            checkAuth();
+            renderCategories();
+            renderProducts();
+        };
+
+        // AUTHENTICATION LOGIC
+        function checkAuth() {
+            const loginModal = document.getElementById("loginModal");
+            const appContent = document.getElementById("appContent");
+            const userGreeting = document.getElementById("userGreeting");
+
+            if (currentUser) {
+                loginModal.classList.add("hidden");
+                appContent.classList.remove("hidden");
+                appContent.classList.add("flex");
+                userGreeting.textContent = currentUser;
+            } else {
+                loginModal.classList.remove("hidden");
+                appContent.classList.add("hidden");
+                appContent.classList.remove("flex");
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById("usernameInput").value.trim();
+            const passwordInput = document.getElementById("passwordInput").value.trim().toLowerCase();
+            const errorBox = document.getElementById("loginError");
+
+            if (passwordInput === SECRET_PASSWORD) {
+                currentUser = usernameInput || "Boss";
+                localStorage.setItem("amdali_user", currentUser);
+                errorBox.classList.add("hidden");
+                checkAuth();
+            } else {
+                errorBox.classList.remove("hidden");
+                const passEl = document.getElementById("passwordInput");
+                passEl.classList.add("border-red-500");
+                setTimeout(() => passEl.classList.remove("border-red-500"), 2000);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("amdali_user");
+            currentUser = null;
+            cart = [];
+            updateCartUI();
+            checkAuth();
+        }
+
+        // CATEGORIES & PRODUCTS RENDER
+        function renderCategories() {
+            const container = document.getElementById("categoryFilters");
+            container.innerHTML = categories.map(cat => `
+                <button onclick="setCategory('${cat}')" 
+                    class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wider transition-all ${
+                        selectedCategory === cat 
+                        ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-extrabold shadow-lg shadow-yellow-500/20' 
+                        : 'bg-dark-800 text-gray-400 hover:bg-dark-700 hover:text-white border border-white/5'
+                    }">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById("productsGrid");
+            const filtered = selectedCategory === "Все" 
+                ? products 
+                : products.filter(p => p.category === selectedCategory);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">Товары в данной категории временно отсутствуют</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(product => `
+                <div class="group bg-dark-800 rounded-3xl overflow-hidden border border-white/5 hover:border-yellow-500/40 transition-all duration-300 flex flex-col justify-between gold-card-hover">
+                    <div class="relative aspect-[4/5] overflow-hidden bg-dark-900">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <span class="absolute top-3 left-3 bg-black/80 backdrop-blur-md text-yellow-400 text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest border border-yellow-500/30">
+                            ${product.category}
+                        </span>
+                    </div>
+                    <div class="p-6 flex flex-col justify-between flex-grow space-y-4">
+                        <div>
+                            <h3 class="text-white font-bold text-base font-heading group-hover:text-yellow-400 transition-colors line-clamp-2">${product.title}</h3>
+                            <p class="text-2xl font-black text-yellow-400 mt-2 font-heading tracking-tight">$${product.price.toLocaleString()}</p>
+                        </div>
+                        <button onclick="addToCart(${product.id})" 
+                            class="w-full py-3.5 bg-dark-700 hover:bg-yellow-500 text-white hover:text-black font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 border border-white/10 hover:border-transparent flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> Добавить в заказ
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // CART LOGIC
+        function addToCart(productId) {
+            const item = products.find(p => p.id === productId);
+            const inCart = cart.find(c => c.id === productId);
+
+            if (inCart) {
+                inCart.quantity++;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(c => c.id !== productId);
+            updateCartUI();
+        }
+
+        function changeQuantity(productId, delta) {
+            const item = cart.find(c => c.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById("cartItemsContainer");
+            const badge = document.getElementById("cartBadge");
+            const totalSum = document.getElementById("cartTotalSum");
+            const checkoutBtn = document.getElementById("checkoutBtn");
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.classList.remove("opacity-0", "scale-90");
+                badge.classList.add("opacity-100", "scale-100");
+                checkoutBtn.disabled = false;
+            } else {
+                badge.classList.add("opacity-0", "scale-90");
+                badge.classList.remove("opacity-100", "scale-100");
+                checkoutBtn.disabled = true;
+            }
+
+            totalSum.textContent = `$${totalPrice.toLocaleString()}`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center text-gray-500 py-16">
+                        <i class="fa-solid fa-crown text-5xl mb-4 opacity-20 text-yellow-500"></i>
+                        <p class="text-sm font-medium">Ваша корзина пуста</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="pt-4 first:pt-0 flex items-center gap-4">
+                    <img src="${item.image}" alt="${item.title}" class="w-16 h-16 object-cover rounded-2xl border border-white/10">
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-semibold text-white line-clamp-1">${item.title}</h4>
+                        <p class="text-xs text-yellow-400 font-bold mt-0.5">$${item.price.toLocaleString()}</p>
+                        <div class="flex items-center gap-3 mt-2">
+                            <div class="flex items-center bg-dark-950 rounded-xl border border-white/10">
+                                <button onclick="changeQuantity(${item.id}, -1)" class="px-2.5 py-1 text-gray-400 hover:text-white font-bold">-</button>
+                                <span class="px-2 text-xs text-white font-black">${item.quantity}</span>
+                                <button onclick="changeQuantity(${item.id}, 1)" class="px-2.5 py-1 text-gray-400 hover:text-white font-bold">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-gray-500 hover:text-red-400 p-2 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function toggleCart(show) {
+            const drawer = document.getElementById("cartDrawer");
+            const overlay = document.getElementById("cartOverlay");
+
+            if (show) {
+                overlay.classList.remove("opacity-0", "pointer-events-none");
+                drawer.classList.remove("translate-x-full");
+            } else {
+                overlay.classList.add("opacity-0", "pointer-events-none");
+                drawer.classList.add("translate-x-full");
+            }
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            
+            document.getElementById("orderCustomerName").textContent = currentUser || "Boss";
+            toggleCart(false);
+            
+            cart = [];
+            updateCartUI();
+
+            const modal = document.getElementById("orderSuccessModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeOrderModal() {
+            const modal = document.getElementById("orderSuccessModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+    </script>
+</body>
+</html>
